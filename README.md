@@ -1,44 +1,98 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Neighbourhood Maps React Project
 
-## Available Scripts
+## Table of Contents
+* [About the Application](#about-the-application)
+* [Application dependencies](#application-dependencies)
+* [Getting Started](#getting-started)
+* [How to Run the Application](#how-to-run-the-application)
+* [Production mode](#production-mode)
+* [Utilites and Assests](#utilites-and-assests)
+* [Resources](#resources)
+* [Built with](#Built-with)
+* [Technologies](#technologies)
+* [Contributing](#contributing)
 
-In the project directory, you can run:
+## About the Application
 
-### `npm start`
+A **Neighbourhood Maps React Project** which is a web application with mobile and offline first aproach that is responsive and works offline.Conforming with the web accesibilty standard this single page application shows a map with markers representing some points of interest in **City**. The app interface is such that the user can click on a marker on the map or on a list item in the toggleable side menu to display an info window with details of that place.User can also search specific places with a search input provided on the sidebar.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Application-dependencies
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+            This application Requires Active Internet Connection to Run
 
-### `npm test`
+* This app uses [react-google-map](https://www.npmjs.com/package/react-google-maps) to help integrate google maps with react more smoothly. As well as add extra functionalites such as as marker and info window.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+##  Getting Started
+* To run the project you will need **Node.js** installed on your machine, which comes with **npm** , a node package manager.
+* Visit the official page to download it and read more about it [Node.js](https://nodejs.org/it/)
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+## How to Run the Application
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+ 1. Download the zip folder and unzip it.
+ 2. _Open_ the main folder
+ 3. Do the of following **two** steps to get this app running
+    i. In this folder open the **terminal** , cd to current folder and type `npm install` to install dependencies.
+    ii.Then, type `npm start` into terminal after the installation is complete.
+ 4. A new window will be opened visting `http://localhost:3000` in your default browser.
+ 5. With your server running, You can also visit the site: `http://localhost:3000` in your preferred browser.
+ 6. To disconnect simply close your terminal.
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Production mode
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+* To create a production mode use `npm run build`
+* For more info Refer [create react app documentation](https://github.com/facebook/create-react-app#npm-run-build-or-yarn-build)
+ **The build is minified and the filenames include the hashes.By default, it also includes a service worker so that your app loads from local cache on future visits.**
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Utilites and Assests
 
-## Learn More
+#### Google Maps Api
+The project makes use of the [Google maps api](https://developers.google.com/maps/documentation/javascript/tutorial) service to display the map of the chosen neighbourhood.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+#### Fouresquare Api
+The data retrieved for each place though, are supplied by [FoursquareAPI](https://developer.foursquare.com/) a local search and recommender-system service. Attribution are credited on the left side menu and on each infowindow displayed when the user click on a marker.
+In the PlacesDataAPI file in src folder you can find the methods **getPlaces** and **getDetails** which are responsible for the request to the foursquareAPI.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+
+## Resources
+
+
+* [Create React App](https://github.com/facebook/create-react-app)
+* [BrowserRouter](https://reacttraining.com/react-router/web/api)
+* [Building with React](https://udacity.com/)
+* [React](https://reactjs.org/docs/thinking-in-react.html)
+* [React](https://stackoverflow.com/questions/28868071/onchange-event-using-react-js-for-drop-down)
+* [React](https://codeburst.io/use-class-properties-to-clean-up-your-classes-and-react-components-93185879f688)
+* [React](https://reactjs.org/docs/faq-functions.html)
+* [React](https://reactjs.org/tutorial/tutorial.html#reactive-state)
+
+
+
+
+* [Neighbourhood project walkthrough](https://www.youtube.com/watch?v=Uw5Ij56RhME&t=10296s) gives me some useful ideas to get started
+* [How to render google maps with react](https://www.klaasnotfound.com/2016/11/06/making-google-maps-work-with-react/) gives me a good understanding of how to implement the map with react, since it makes use of virtual dom and the load of the main script to google api service is disrupted
+* [react google maps docs](https://tomchentw.github.io/react-google-maps/#introduction) helps me understand how to get started with this package
+
+
+
+#### Built with
+
+This project was bootstraped with [create react app](https://github.com/facebook/create-react-app)
+
+
+## Technologies
+
+* Visual Studio Code Editor
+* React.js
+* Javascript
+* HTML
+* CSS
+
+
+## Contributing
+Any suggestions are welcome.
+
+
