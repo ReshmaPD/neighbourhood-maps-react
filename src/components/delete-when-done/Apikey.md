@@ -7,3 +7,16 @@ defaultCenter={this.props.center}
 onChildMouseEnter={this.onChildMouseEnter}
 onChildMouseLeave={this.onChildMouseLeave}
 { lat: 39.648209, lng: -75.711185 }
+
+<!-- mozilla inspect console -->
+
+    font-family: Menlo, Consolas, monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    flex: 1 1 0%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0%;
+    display: flex;
+    flex-direction: column;
+    min-height: 0px;
