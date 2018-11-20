@@ -67,6 +67,7 @@ In the PlacesDataAPI file in src folder you can find the methods **getPlaces** a
 #### Fallbacks and Error Handling
 
 - [error handling in react](https://reactjs.org/blog/2017/07/26/error-handling-in-react-16.html)
+- [componentdidcatch-lifecycle-method](https://medium.com/@sgroff04/2-minutes-to-learn-react-16s-componentdidcatch-lifecycle-method-d1a69a1f753)
 
 #### React Learning
 
