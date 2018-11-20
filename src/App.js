@@ -1,12 +1,35 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import ErrorBoundary from "./ErrorBoundary";
 import "./App.css";
 
 class App extends Component {
-  state = {
-    map: "",
-    all: null
+  static propTypes = {
+    google: PropTypes.object,
+    zoom: PropTypes.number,
+    initialCenter: PropTypes.object
   };
+
+  static defaultProps = {
+    zoom: 13,
+    initialCenter: {
+      lat: 19.076,
+      lng: 72.8777
+    }
+  };
+
+  constructor(props) {
+    super(props);
+    const { lat, lng } = this.props.initialCenter;
+    this.state = {
+      map: "",
+      currentLocation: {
+        lat: lat,
+        lng: lng
+      },
+      all: null
+    };
+  }
 
   componentDidMount() {
     window.gm_authFailure = () => {
@@ -24,11 +47,11 @@ class App extends Component {
   };
 
   initMap() {
-    var mapview = document.getElementById("map");
-    mapview.style.height = window.innerHeight + "px";
+    const { lat, lng } = this.state.currentLocation;
+    const mapview = document.getElementById("map");
     var map = new window.google.maps.Map(mapview, {
-      center: { lat: 19.076, lng: 72.8777 },
-      zoom: 12,
+      center: { lat: lat, lng: lng },
+      zoom: this.props.zoom,
       mapTypeId: "roadmap",
       mapTypeControl: false,
       streetViewControl: true
@@ -49,7 +72,7 @@ class App extends Component {
 
 /**
  * @param {url}Load the google maps using script url
- * Resources [1]
+ * reference-Resources [1]
  */
 function loadScript(url) {
   let index = window.document.getElementsByTagName("script")[0];
