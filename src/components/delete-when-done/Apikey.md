@@ -20,3 +20,9 @@ onChildMouseLeave={this.onChildMouseLeave}
     display: flex;
     flex-direction: column;
     min-height: 0px;
+
+<InfoWindow position={{ lat: 37.765703, lng: -122.42564 }} visible>
+<small>
+Click on any of the markers to display an additional info.
+</small>
+</InfoWindow>

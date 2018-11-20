@@ -1,80 +1,98 @@
 import React, { Component } from "react";
-import { GoogleApiWrapper, InfoWindow, Map, Marker } from "google-maps-react";
+import { GoogleApiWrapper, InfoWindow, Map } from "google-maps-react";
 
-//eslint-disable-next-line
-// import Paper from 'material-ui/Paper';
-// import Typography from 'material-ui/Typography';
-// import { typography } from 'material-ui/styles';
-//eslint-disable-next-line no-unused-vars
-const MAP_API_KEY = "AIzaSyBuOtZ4Xw9Wo4EK96HJ5Xmrs4Rz9sv5P1c";
+const MAP_API_KEY = "AIzaSyDNIiyRSDZFSZXoZz1lasmM-KOXnMIhgSQ";
 
 class GoogleMapsContainer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showingInfoWindow: false,
-      activeMarker: {},
-      selectedPlace: {}
-    };
-    // binding this to event-handler functions
-    // this.onMarkerClick = this.onMarkerClick.bind(this);
-    // this.onMapClick = this.onMapClick.bind(this);
-  }
-  // static defaultProps = {
-  //   center: { lat: 30.4456494, lng: -97.6326804 }
-  // };
+  static defaultProps = {
+    center: { lat: 16.50338, lng: 80.6455743 },
+    zoom: 12
+  };
+  state = {
+    map: null,
+    markers: [],
+    markerProp: [],
+    activeMarker: null,
+    activeMarkerProps: null,
+    showingInfoWindow: false
+  };
 
-  onMarkerClick = (props, marker, e) => {
+  mapReady = (props, map) => {
+    this.setState({ map });
+    this.updateMarkers(this.props.places);
+  };
+  closeInfoWindow = () => {
+    this.state.activeMarker && this.setState.activeMarker.setAnimation(null);
     this.setState({
-      selectedPlace: props,
-      activeMarker: marker,
-      showingInfoWindow: true
+      showingInfoWindow: false,
+      activeMarker: null,
+      activeMarkerProps: null
     });
   };
 
-  onMapClick = props => {
-    if (this.state.showingInfoWindow) {
-      this.setState({
-        showingInfoWindow: false,
-        activeMarker: null
-      });
-    }
+  onMarkerClick = (props, marker, e) => {
+    this.closeInfoWindow();
+    this.setState({
+      showingInfoWindow: true,
+      activeMarker: marker,
+      activeMarkerProps: props
+    });
   };
 
+  updateMarkers = locations => {
+    if (!locations) return;
+    this.state.markers.forEach(marker => marker.setMap(null));
+
+    let markerProps = [];
+    let markers = locations.map((location, index) => {
+      let mProps = {
+        key: index,
+        index,
+        name: location.name,
+        position: location.pos
+      };
+      markerProps.push(mProps);
+      let animation = this.props.google.maps.Animation.DROP;
+      let marker = new this.props.google.maps.Marker({
+        position: location.pos,
+        map: this.state.map,
+        animation
+      });
+      marker.addListener("click", () => {
+        this.onMarkerClick(mProps, marker, null);
+      });
+      return marker;
+    });
+    this.setState({ markers, markerProps });
+  };
   render() {
+    // center ={this.props.currentLocation};
     const style = {
       width: "100%",
       height: "100vh",
       marginLeft: "auto",
       marginRight: "auto"
     };
-
+    let amProps = this.state.activeMarkerProps;
     return (
       <Map
+        className="map"
+        defaultCenter={this.props.center}
         role="application"
         aria-label="map"
-        item
-        xs={12} //removed in MC
+        onReady={this.mapReady}
         style={style}
         google={this.props.google}
-        onClick={this.onMapClick} //removed in MC
-        zoom={14}
-        initialCenter={{ lat: 39.648209, lng: -75.711185 }}
+        defaultzoom={this.props.zoom}
+        // initalCenter={this.props.currentLocation}
       >
-        <Marker
-          // added animation place.mame this.pos lat lon MC
-          onClick={this.onMarkerClick}
-          title={"You Got this Ray"}
-          position={{ lat: 39.648209, lng: -75.711185 }}
-          name={"You Got this Ray"}
-        />
         <InfoWindow
           marker={this.state.activeMarker}
           visible={this.state.showingInfoWindow}
+          onClose={this.closeInfoWindow}
         >
-          {/* Line 70 MC added  ternary operation to exceed forsqare limit */}
           <div>
-            <h4>{this.state.selectedPlace.name}</h4>
+            <h3>{amProps && amProps.name}</h3>
           </div>
         </InfoWindow>
       </Map>
