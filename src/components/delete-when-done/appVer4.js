@@ -2,9 +2,9 @@ import React, { Component } from "react";
 // import logo from "./crystal-ball-logo.png";
 // import ReactDOM from "react-dom";
 // import PropTypes from "prop-types";
-import ErrorBoundary from "./ErrorBoundary";
+import ErrorBoundary from "../../ErrorBoundary";
 import "./App.css";
-import GoogleMapsContainter from "./components/GoogleMapsContainer.js";
+import GoogleMapsContainter from "./GoogleMapsContainer.js";
 import locations from "./data/locations.json";
 
 class App extends Component {
