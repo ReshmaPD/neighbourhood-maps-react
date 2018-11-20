@@ -112,3 +112,11 @@ export default App;
 //       onClick={this.onMarkerClick}
 //     />
 //   ))}
+
+constructor(props) {
+  super(props);
+  this.state = {
+    map: "",
+    all: null
+  };
+}
