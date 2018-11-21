@@ -1,34 +1,44 @@
 [
   {
+    "name": "Gateway of India",
     "title": "Gateway of India",
+    "id": 1,
     "location": {
       "lat": 18.921984,
       "lng": 72.834654
     }
   },
   {
+    "name": "Zoo",
     "title": "Zoo",
+    "id": 2,
     "location": {
       "lat": 18.97871,
       "lng": 72.835121
     }
   },
   {
+    "name": "Jehangir Art Gallery",
     "title": "Jehangir Art Gallery",
+    "id": 3,
     "location": {
       "lat": 18.927456,
       "lng": 72.831703
     }
   },
   {
+    "name": "Essel World",
     "title": "Essel World",
+    "id": 4,
     "location": {
       "lat": 19.232724,
       "lng": 72.805508
     }
   },
   {
+    "name": "Film Studio",
     "title": "Film Studio",
+    "id": 5,
     "location": {
       "lat": 19.162903,
       "lng": 72.88369
