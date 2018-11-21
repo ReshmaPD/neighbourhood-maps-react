@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ErrorBoundary from "./ErrorBoundary";
 import "./App.css";
+import locations from "./data/locations.json";
 
 class App extends Component {
   static propTypes = {
@@ -15,7 +16,8 @@ class App extends Component {
     initialCenter: {
       lat: 19.076,
       lng: 72.8777
-    }
+    },
+    allplaces: locations
   };
 
   constructor(props) {
