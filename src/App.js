@@ -13,12 +13,11 @@ class App extends Component {
   };
 
   static defaultProps = {
-    zoom: 13,
+    zoom: 13.5,
     initialCenter: {
-      lat: 19.076,
-      lng: 72.8777
-    },
-    allplaces: locations
+      lat: 18.921984,
+      lng: 72.834654
+    }
   };
 
   constructor(props) {
@@ -30,7 +29,9 @@ class App extends Component {
         lat: lat,
         lng: lng
       },
-      all: null
+      alllocations: locations,
+      markers: [],
+      markerProp: []
     };
   }
 
@@ -57,6 +58,30 @@ class App extends Component {
       mapTypeControl: false,
       streetViewControl: true
     });
+    let markerProps = [];
+    let markers = locations.map((location, index) => {
+      let mProps = {
+        key: index,
+        index,
+        name: location.name,
+        position: location.location
+      };
+      markerProps.push(mProps);
+      let animation = window.google.maps.Animation.DROP;
+      let marker = new window.google.maps.Marker({
+        position: location.location,
+        map: map,
+        animation
+      });
+      location.marker = marker;
+      location.display = true;
+      marker.addListener("click", () => {
+        this.onMarkerClick(mProps, marker, null);
+      });
+      return marker;
+    });
+    this.setState({ markers, markerProps });
+
     this.setState({ map });
   }
 
