@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-// import ErrorBoundary from "./ErrorBoundary";
-import "./App.css";
 import locations from "./data/locations.json";
+import ErrorBoundary from "./ErrorBoundary";
+import Map from "./Map";
+import "./App.css";
 
 class App extends Component {
   static propTypes = {
@@ -39,7 +40,7 @@ class App extends Component {
 
   displayMap = () => {
     const apiKey = "AIzaSyDNIiyRSDZFSZXoZz1lasmM-KOXnMIhgSQ";
-    loadScript(
+    loadJS(
       `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap`
     );
     window.initMap = this.initMap.bind(this);
@@ -62,7 +63,9 @@ class App extends Component {
   render() {
     return (
       <main className="App">
-        <div id="map" role="application" aria-label="map" />
+        <ErrorBoundary>
+          <Map />
+        </ErrorBoundary>
       </main>
     );
   }
@@ -72,13 +75,13 @@ class App extends Component {
  * @param {url}Load the google maps using script url
  * reference-Resources [1]
  */
-function loadScript(url) {
-  let index = window.document.getElementsByTagName("script")[0];
+function loadJS(url) {
+  let ref = window.document.getElementsByTagName("script")[0];
   let script = window.document.createElement("script");
   script.src = url;
   script.async = true;
   script.defer = true;
-  index.parentNode.insertBefore(script, index);
+  ref.parentNode.insertBefore(script, ref);
   script.onerror = function() {
     document.write("Error loading Map. Please try again.");
   };
