@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ErrorBoundary from "./ErrorBoundary";
+// import ErrorBoundary from "./ErrorBoundary";
 import "./App.css";
 import locations from "./data/locations.json";
 
@@ -34,9 +34,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    window.gm_authFailure = () => {
-      alert("authentification for google maps did not pass");
-    };
     this.displayMap();
   }
 
@@ -51,10 +48,11 @@ class App extends Component {
   initMap() {
     const { lat, lng } = this.state.currentLocation;
     const mapview = document.getElementById("map");
+    // mapview.style.height = window.innerHeight + "px";
     var map = new window.google.maps.Map(mapview, {
       center: { lat: lat, lng: lng },
       zoom: this.props.zoom,
-      mapTypeId: "roadmap",
+      // mapTypeId: "roadmap",
       mapTypeControl: false,
       streetViewControl: true
     });
@@ -64,9 +62,7 @@ class App extends Component {
   render() {
     return (
       <main className="App">
-        <ErrorBoundary>
-          <div id="map" role="application" aria-label="map" />
-        </ErrorBoundary>
+        <div id="map" role="application" aria-label="map" />
       </main>
     );
   }
