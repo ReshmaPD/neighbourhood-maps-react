@@ -28,6 +28,7 @@ class App extends Component {
     const { lat, lng } = this.props.initialCenter;
     this.state = {
       map: "",
+      loaded: false,
       currentLocation: {
         lat: lat,
         lng: lng
@@ -89,7 +90,7 @@ class App extends Component {
     });
     this.setState({ markers, markerProps });
     // ===========================================================STATE================================================
-    this.setState({ map });
+    this.setState({ map, loaded: true });
   }
   //=======================================================RENDER======================================================
   render() {
