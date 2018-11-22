@@ -65,7 +65,7 @@ class App extends Component {
     // ===============================================================================================================
     // =======================================================Markers=================================================
     let markerProps = [];
-    let markers = locations.map((location, index) => {
+    let markers = this.props.alllocations.map((location, index) => {
       let mProps = {
         key: index,
         index,
