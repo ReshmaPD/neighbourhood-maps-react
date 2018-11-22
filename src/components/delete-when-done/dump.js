@@ -113,10 +113,33 @@ export default App;
 //     />
 //   ))}
 
-constructor(props) {
-  super(props);
-  this.state = {
-    map: "",
-    all: null
-  };
-}
+// constructor(props) {
+//   super(props);
+//   this.state = {
+//     map: "",
+//     all: null
+//   };
+// }
+/**
+ * {
+​​​​"name":"Prithvi Theatre",
+"id":1,
+​​​​​"address":"Church Road (Juhu) Mumbai 400049 Maharashtra India",
+"pos": {
+"lat": 19.106156977247707,
+"lng": 72.82580993416029
+        },
+"postalCode":400049
+},
+
+{
+    ​​​​"name":"Worli Sea Face",
+    "id":2,
+    ​​​​​"address":"Worli (Khan Abdul Gaffar Khan Road), Mumbai 400018 Maharashtra India",
+    "pos": {
+    "lat":19.009216497075652,
+    "lng": 72.8150224685669
+    },
+    "postalCode":400049
+    },
+ */

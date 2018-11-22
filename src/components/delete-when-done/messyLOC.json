@@ -1,0 +1,134 @@
+[
+{
+    ​​​​"name": "Prithvi Theatre",
+    "id": 1,
+    "pos": {
+        "lat": 19.106156,
+        "lng": 72.825809
+            }
+},
+{
+    "name": "Worli Sea Face",
+    "id": 2,
+    "pos": {
+        "lat": 19.009216,
+        "lng": 72.815022
+            }
+},
+{
+    "name": "Haji Ali Sea Face",
+    "id": 3,
+    "pos": {
+        "lat": 18.978995,
+        "lng": 72.811853
+            }
+},
+ {
+    "name": "Bandstand Promenade",
+    "id": 4,
+    "pos": {
+        "lat": 19.04694,
+        "lng": 72.81991
+             }
+},
+{
+    "name": "Mahalaxmi Race Course",
+    "id": 5,
+    "pos": {
+        "lat": 18.98053,
+        "lng": 72.81858
+    }
+},
+{
+    "name": "Carter Road Promenade",
+    "id": 6,
+    "pos": {
+        "lat": 19.0672,
+        "lng": 72.8229
+    }
+},
+{
+    "name": "Mehboob Studios",
+    "id":7,
+    "pos":{
+        "lat": 19.0523,
+        "lng": 72.8249
+    }
+},
+{
+    "name": "Otters Club",
+    "id":8,
+    "pos":{
+        "lat": 19.06057,
+        "lng": 72.82140
+    }
+},
+{
+    "name": "Juhu Beach",
+    "id":9,
+    "pos":{
+        "lat": 19.09808,
+        "lng": 72.82692
+    }
+},
+{
+    "name": "Film City",
+    "id":10,
+    "pos":{
+        "lat": 19.1609,
+        "lng": 72.8861
+    }
+},
+{
+
+    "name": "Bandra Sea Face",
+    "id":11,
+    "pos":{
+        "lat":  19.0442,
+        "lng": 72.8202
+    }
+},
+{
+    "name": "Gateway of India",
+    "id": 12,
+    "pos": {
+        "lat": 18.921856,
+        "lng": 72.834877
+    }
+},
+{
+    "name": "Jehangir Art Gallery",
+    "id": 13,
+    "pos": {
+        "lat": 18.92760,
+        "lng": 72.83146
+    }
+},
+{
+    "name": "Wankhede Stadium",
+    "id": 14,
+    "pos": {
+        "lat": 18.9387,
+        "lng": 72.8259
+    }
+},
+{
+    "name": "Marine Drive",
+    "id": 15,
+    "pos": {
+        "lat": 18.94122,
+        "lng": 72.82326
+    }
+},
+{
+    "name": "Nariman Point",
+    "id": 16,
+    "pos": {
+        "lat": 18.9291,
+        "lng": 72.8222
+    }
+}
+
+]
+
+
