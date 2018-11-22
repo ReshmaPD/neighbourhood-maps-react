@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import locations from "./data/locations.json";
-import ErrorBoundary from "./ErrorBoundary";
-import Map from "./Map";
+// =========================================================COMPONENTS============================================
+import ErrorBoundary from "./components/ErrorBoundary";
+import Map from "./components/Map";
 import "./App.css";
-
+// ================================================================================================================
 class App extends Component {
+  // ====================================================STATIC========================================================
   static propTypes = {
     google: PropTypes.object,
     zoom: PropTypes.number,
@@ -13,13 +15,14 @@ class App extends Component {
   };
 
   static defaultProps = {
-    zoom: 13.5,
+    zoom: 12,
     initialCenter: {
-      lat: 18.921984,
-      lng: 72.834654
-    }
+      lat: 19.009216,
+      lng: 72.815022
+    },
+    alllocations: locations
   };
-
+  // =======================================================CONSTRUCTOR STATE============================================
   constructor(props) {
     super(props);
     const { lat, lng } = this.props.initialCenter;
@@ -29,7 +32,7 @@ class App extends Component {
         lat: lat,
         lng: lng
       },
-      alllocations: locations,
+      // alllocations: locations,
       markers: [],
       markerProp: []
     };
@@ -38,7 +41,7 @@ class App extends Component {
   componentDidMount() {
     this.displayMap();
   }
-
+  // =================================================MAP FUNCT=====================================================
   displayMap = () => {
     const apiKey = "AIzaSyDNIiyRSDZFSZXoZz1lasmM-KOXnMIhgSQ";
     loadJS(
@@ -46,7 +49,7 @@ class App extends Component {
     );
     window.initMap = this.initMap.bind(this);
   };
-
+  // ======================================================MAP INIT=================================================
   initMap() {
     const { lat, lng } = this.state.currentLocation;
     const mapview = document.getElementById("map");
@@ -54,37 +57,40 @@ class App extends Component {
     var map = new window.google.maps.Map(mapview, {
       center: { lat: lat, lng: lng },
       zoom: this.props.zoom,
-      // mapTypeId: "roadmap",
+      mapTypeId: "roadmap",
       mapTypeControl: false,
       streetViewControl: true
     });
+    // ===============================================================================================================
+    // =======================================================Markers=================================================
     let markerProps = [];
     let markers = locations.map((location, index) => {
       let mProps = {
         key: index,
         index,
         name: location.name,
-        position: location.location
+        position: location.pos
       };
       markerProps.push(mProps);
       let animation = window.google.maps.Animation.DROP;
       let marker = new window.google.maps.Marker({
-        position: location.location,
+        position: new window.google.maps.LatLng(location.pos),
+        // position: location.pos,
         map: map,
         animation
       });
       location.marker = marker;
       location.display = true;
       marker.addListener("click", () => {
-        this.onMarkerClick(mProps, marker, null);
+        this.onMarkerClick(mProps, marker);
       });
       return marker;
     });
     this.setState({ markers, markerProps });
-
+    // ===========================================================STATE================================================
     this.setState({ map });
   }
-
+  //=======================================================RENDER======================================================
   render() {
     return (
       <main className="App">
@@ -95,10 +101,10 @@ class App extends Component {
     );
   }
 }
-
+//===========================================================END OF CLASS==============================================
 /**
  * @param {url}Load the google maps using script url
- * reference-Resources [1]
+ * reference-Resources[1]
  */
 function loadJS(url) {
   let ref = window.document.getElementsByTagName("script")[0];
@@ -108,8 +114,8 @@ function loadJS(url) {
   script.defer = true;
   ref.parentNode.insertBefore(script, ref);
   script.onerror = function() {
-    document.write("Error loading Map. Please try again.");
+    document.write("Error loading Map, Try again in a few moments.");
   };
 }
-
+//=====================================================================================================================
 export default App;
