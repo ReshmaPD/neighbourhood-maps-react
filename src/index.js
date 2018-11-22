@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
-import ErrorScreen from "./ErrorScreen";
+import ErrorScreen from "./components/ErrorScreen";
 import * as serviceWorker from "./serviceWorker";
 
 window.gm_authFailure = () => {
