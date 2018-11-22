@@ -77,6 +77,7 @@ class App extends Component {
         position: new window.google.maps.LatLng(location.pos),
         // position: location.pos,
         map: map,
+        title: location.name,
         animation
       });
       location.marker = marker;
