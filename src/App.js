@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import locations from "./data/locations.json";
+import axios from "axios";
 // =========================================================COMPONENTS============================================
 import ErrorBoundary from "./components/ErrorBoundary";
 import Map from "./components/Map";
 import "./App.css";
 // ================================================================================================================
+
 class App extends Component {
   // ====================================================STATIC========================================================
   static propTypes = {
@@ -35,13 +37,43 @@ class App extends Component {
       },
       // alllocations: locations,
       markers: [],
-      markerProp: []
+      markerProp: [],
+      allPlaces: [],
+      places: [],
+      isLoading: true,
+      error: null
     };
   }
 
   componentDidMount() {
+    this.getPlaces("sights", "mumbai");
     this.displayMap();
   }
+
+  getPlaces = async (query, location) => {
+    const endPoint = "https://api.foursquare.com/v2/venues/explore?";
+    const params = {
+      client_id: "MDZCTQDUG0TNYDYGOUFMGCKH322MHRGPKXKX4OVGMXFFKKFP",
+      client_secret: "IE5OFGXC5N0ANX342UUEVJ0GWBO1WD1CGJFFJ3VVLN5XPAQC",
+      query: query,
+      near: location,
+      v: "20182010"
+    };
+
+    // Fetch
+    // const fetchData = async () => {
+    const response = await axios.get(endPoint + new URLSearchParams(params));
+    try {
+      this.setState({
+        allPlaces: response.data.response.groups[0].items,
+        places: response.data.response.groups[0].items,
+        isLoading: false
+      });
+    } catch (error) {
+      this.setState({ error: error, isLoading: false });
+    }
+  };
+
   // =================================================MAP FUNCT=====================================================
   displayMap = () => {
     const apiKey = "AIzaSyDNIiyRSDZFSZXoZz1lasmM-KOXnMIhgSQ";
