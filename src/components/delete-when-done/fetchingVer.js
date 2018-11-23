@@ -22,3 +22,25 @@
 //     });
 //     this.setState({ currentPlaces: newPlaces });
 //   };
+// getFourSquareData = () => {
+//     const newPlaces = this.props.alllocations.map(place => {
+//       // const size = 150;
+//       FourSquareAPI.getFourSquareVenueID(
+//         place.pos.lat,
+//         place.pos.lng,
+//         place.name
+//       )
+//         .then(venueId => {
+//           FourSquareAPI.getFourSquareVenueInfo(venueId)
+//             .then(venueInfo => {
+//               place.address = venueInfo.likes.count;
+//               // place.img =
+//               // venueInfo.bestPhoto.prefix + size + venueInfo.bestPhoto.suffix;
+//             })
+//             .catch(() => this.setState({ requestAvailable: false }));
+//         })
+//         .catch(e => alert(e));
+//       return place;
+//     });
+//     this.setState({ currentPlaces: newPlaces });
+//   };
