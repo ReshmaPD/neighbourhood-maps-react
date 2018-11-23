@@ -46,18 +46,18 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.getPlaces("sights", "mumbai");
     this.displayMap();
+    this.getPlaces("sights", "mumbai");
   }
 
   getPlaces = async (query, location) => {
     const endPoint = "https://api.foursquare.com/v2/venues/explore?";
     const params = {
-      client_id: "MDZCTQDUG0TNYDYGOUFMGCKH322MHRGPKXKX4OVGMXFFKKFP",
-      client_secret: "IE5OFGXC5N0ANX342UUEVJ0GWBO1WD1CGJFFJ3VVLN5XPAQC",
+      client_id: "QV5MGPULNHAO5GRFVSWB04I023O4HYR1EQUKGDSL23F5NVZO",
+      client_secret: "4ETVXDDVKL0T0DASWLZK52052YDD04CNY0WUSHFQPBNTIWUI",
       query: query,
       near: location,
-      v: "20182010"
+      v: "20181123"
     };
 
     // Fetch
