@@ -58,7 +58,7 @@ class App extends Component {
       client_id: "QV5MGPULNHAO5GRFVSWB04I023O4HYR1EQUKGDSL23F5NVZO",
       client_secret: "4ETVXDDVKL0T0DASWLZK52052YDD04CNY0WUSHFQPBNTIWUI",
       query: query,
-      near: "18.938792382629718,72.82594448102758",
+      ll: "18.938792382629718,72.82594448102758",
       v: "20181123"
     };
 
@@ -130,27 +130,27 @@ class App extends Component {
           .toLowerCase()
           .includes(this.state.query.toLowerCase())
       )
-      .forEach((location, index) => {
+      .forEach(location => {
         //create content string for each info window
 
         const contentString =
           this.state.isLoading === false &&
           this.state.error === null &&
           this.state.requestSolved === true
-            ? `<h1>${location.venue.name}</h1>
+            ? `<div class="info-content">
+              <h1>${location.venue.name}</h1>
               <p>Address:${location.venue.location.formattedAddress[0]}
-             ${location.venue.location.formattedAddress[1]}
+              ${location.venue.location.formattedAddress[1]}
               ${location.venue.location.formattedAddress[2]}</p>
               <p>lat: ${location.venue.location.lat.toFixed(2)},
               lng: ${location.venue.location.lng.toFixed(2)}</p>
-              <h2>Powered By FourSquare</h2>
+              <h2>Powered By FourSquare</h2></div>
           `
             : `
-        <div class="info-content">
-        <h2>${location.venue.name}</h2>
-        <h4>Sorry,Cannot get Data</h4>
-        </div>
-        <h2>Exceeded FourSquare API limit</h2>`;
+              <div class="info-content">
+              <h1>${location.venue.name}</h1>
+              <h3>Sorry,Cannot get Data</h3>
+              <h2>Exceeded FourSquare API limit</h2></div>`;
         // create a marker for each location
         let animation = window.google.maps.Animation.DROP;
         let marker = new window.google.maps.Marker({
@@ -178,8 +178,7 @@ class App extends Component {
         map.addListener("click", () => {
           if (infowindow) {
             infowindow.close();
-          }
-          else{
+          } else {
             this.state.map.setCenter(marker.getPosition());
             this.state.map.panBy(0, -200);
           }
