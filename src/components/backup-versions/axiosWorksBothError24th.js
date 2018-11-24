@@ -3,14 +3,14 @@ import PropTypes from "prop-types";
 // import locations from "./data/locations.json";
 // import locations2 from "./data/newPlaces2.json";
 import locations2 from "./data/newerPlaces3.json";
-import axios from "axios";
+// import axios from "axios";
 // =========================================================COMPONENTS============================================
-import ErrorBoundary from "./components/ErrorBoundary";
-import Map from "./components/Map";
+import ErrorBoundary from "../../ErrorBoundary";
+import Map from "../../Map";
 // import InfoWindow from "./components/InfoWindow";
 import "./App.css";
 // ================================================================================================================
-
+const axios = require("axios");
 class App extends Component {
   // ====================================================STATIC========================================================
   static propTypes = {
@@ -20,12 +20,12 @@ class App extends Component {
   };
 
   static defaultProps = {
-    zoom: 15,
+    zoom: 11.5,
     initialCenter: {
       lat: 18.938792382629718,
       lng: 72.82594448102758
-    },
-    alllocations: locations2
+    }
+    // alllocations: locations2
   };
   // =======================================================CONSTRUCTOR STATE============================================
   constructor(props) {
@@ -47,7 +47,6 @@ class App extends Component {
       places: [],
       isLoading: true,
       error: null,
-      // venueId: null,
       infowindow: "",
       contents: [],
       venue2: [],
@@ -60,54 +59,52 @@ class App extends Component {
     this.getPlaces("sights");
   }
 
-  getPlaces = async query => {
+  getPlaces = query => {
     const endPoint = "https://api.foursquare.com/v2/venues/explore?";
     const params = {
       client_id: "QV5MGPULNHAO5GRFVSWB04I023O4HYR1EQUKGDSL23F5NVZO",
       client_secret: "4ETVXDDVKL0T0DASWLZK52052YDD04CNY0WUSHFQPBNTIWUI",
       query: query,
-      ll: "18.938792382629718,72.82594448102758",
+      near: "mumbai",
       v: "20181123"
     };
 
     // Fetch
-    // const fetchData = async () => {
-    const response = await axios.get(endPoint + new URLSearchParams(params));
-    try {
-      this.setState(
-        {
+    axios
+      .get(endPoint + new URLSearchParams(params))
+      .then(response => {
+        console.log(response);
+        this.setState({
           allPlaces: response.data.response.groups[0].items,
           places: response.data.response.groups[0].items,
           isLoading: false,
           requestSolved: true
-        },
-        // this.getID
-        this.displayMap
-      );
-    } catch (error) {
-      this.setState(
-        { error: error, isLoading: false, requestSolved: false },
-        this.displayMap
-        // this.getID
-      );
-    }
+        });
+      })
+      .catch(error => {
+        console.log(error);
+        this.setState({
+          error: error,
+          isLoading: false,
+          requestSolved: false
+        });
+      })
+      .then(() => {
+        this.getmap();
+        if (this.state.requestSolved === true) {
+          this.setState({ places2: this.state.places });
+          console.log("I have setState ", this.state.places);
+        }
+        // always executed
+      });
+  };
+
+  getmap = () => {
+    this.displayMap();
   };
 
   // ==============================================================================================================
-  getID = () => {
-    if (this.state.error === null && !this.state.isloading) {
-      var venueId = this.state.allPlaces.map(function(venue) {
-        return venue.venue;
-      });
-      console.log("finally", venueId);
-      console.log("finally2", this.state.allPlaces);
-      // this.setState({ places2: venueId });
-      // this.displayMap();
-    } else {
-      // this.displayMap();
-      console.log("you bombed");
-    }
-  };
+
   // =================================================MAP FUNCT=====================================================
   displayMap = () => {
     const apiKey = "AIzaSyDNIiyRSDZFSZXoZz1lasmM-KOXnMIhgSQ";
@@ -115,11 +112,6 @@ class App extends Component {
       `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap`
     );
     window.initMap = this.initMap.bind(this);
-    if (this.state.requestSolved === true) {
-      this.setState({ places2: this.state.places });
-      console.log("I have setState ", this.state.places2);
-    }
-    // this.getID();
   };
   // ======================================================MAP INIT=================================================
   initMap() {
@@ -154,12 +146,12 @@ class App extends Component {
           this.state.error === null &&
           this.state.requestSolved === true
             ? `<h1>${location.venue.name}</h1>
-              <p>Address: ${location.venue.location.formattedAddress[0]}
+             <p>Address:${location.venue.location.formattedAddress[0]}
              ${location.venue.location.formattedAddress[1]}
               ${location.venue.location.formattedAddress[2]}</p>
-              <p>lat: ${location.venue.location.lat},
-               long: ${location.venue.location.lng}</p>
-               <h2>Powered By FourSquare</h2>
+              <p>lat: ${location.venue.location.lat.toFixed(2)},
+              lng: ${location.venue.location.lng.toFixed(2)}</p>
+              <h2>Powered By FourSquare</h2>
           `
             : `
         <div class="info-content">
@@ -208,10 +200,8 @@ class App extends Component {
         });
       });
     this.setState({ map, markers, infowindow, contents, loaded: true });
-    this.setState({ map, loaded: true });
   }
   //===================================================================================================================
-  getMarkerInfo = (marker, map) => {};
 
   //=======================================================RENDER======================================================
   render() {

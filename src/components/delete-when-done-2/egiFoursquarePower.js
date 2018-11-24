@@ -1,16 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 // import locations from "./data/locations.json";
-// import locations2 from "./data/newPlaces2.json";
-import locations2 from "./data/newerPlaces3.json";
-// import axios from "axios";
+import locations2 from "./data/newPlaces2.json";
+import axios from "axios";
 // =========================================================COMPONENTS============================================
-import ErrorBoundary from "./components/ErrorBoundary";
-import Map from "./components/Map";
-// import InfoWindow from "./components/InfoWindow";
+import ErrorBoundary from "../ErrorBoundary";
+import Map from "../Map";
 import "./App.css";
 // ================================================================================================================
-const axios = require("axios");
+
 class App extends Component {
   // ====================================================STATIC========================================================
   static propTypes = {
@@ -20,12 +18,12 @@ class App extends Component {
   };
 
   static defaultProps = {
-    zoom: 11.5,
+    zoom: 15,
     initialCenter: {
       lat: 18.938792382629718,
       lng: 72.82594448102758
-    }
-    // alllocations: locations2
+    },
+    alllocations: locations2
   };
   // =======================================================CONSTRUCTOR STATE============================================
   constructor(props) {
@@ -40,17 +38,16 @@ class App extends Component {
         lng: lng
       },
       alllocations: locations2,
-      places2: locations2,
       markers: [],
       markerProp: [],
       allPlaces: [],
       places: [],
       isLoading: true,
       error: null,
+      venueAll: [],
+      venueId: null,
       infowindow: "",
-      contents: [],
-      venue2: [],
-      requestSolved: null
+      contents: []
     };
   }
 
@@ -59,52 +56,40 @@ class App extends Component {
     this.getPlaces("sights");
   }
 
-  getPlaces = query => {
+  getPlaces = async query => {
     const endPoint = "https://api.foursquare.com/v2/venues/explore?";
     const params = {
       client_id: "QV5MGPULNHAO5GRFVSWB04I023O4HYR1EQUKGDSL23F5NVZO",
       client_secret: "4ETVXDDVKL0T0DASWLZK52052YDD04CNY0WUSHFQPBNTIWUI",
       query: query,
-      near: "mumbai",
+      near: "18.938792382629718,72.82594448102758",
       v: "20181123"
     };
 
     // Fetch
-    axios
-      .get(endPoint + new URLSearchParams(params))
-      .then(response => {
-        console.log(response);
-        this.setState({
+    // const fetchData = async () => {
+    const response = await axios.get(endPoint + new URLSearchParams(params));
+    try {
+      this.setState(
+        {
           allPlaces: response.data.response.groups[0].items,
           places: response.data.response.groups[0].items,
-          isLoading: false,
-          requestSolved: true
-        });
-      })
-      .catch(error => {
-        console.log(error);
-        this.setState({
-          error: error,
-          isLoading: false,
-          requestSolved: false
-        });
-      })
-      .then(() => {
-        this.getmap();
-        if (this.state.requestSolved === true) {
-          this.setState({ places2: this.state.places });
-          console.log("I have setState ", this.state.places);
-        }
-        // always executed
-      });
+          isLoading: false
+        },
+        this.displayMap
+      );
+    } catch (error) {
+      this.setState({ error: error, isLoading: false }, this.displayMap);
+    }
   };
-
-  getmap = () => {
-    this.displayMap();
-  };
-
   // ==============================================================================================================
-
+  // getID = () => {
+  //   var venueId = this.state.allPlaces.map(function(venue) {
+  //     return venue.venue;
+  //   });
+  //   console.log("finally", venueId);
+  //   this.setState({ venuID: venueId });
+  // };
   // =================================================MAP FUNCT=====================================================
   displayMap = () => {
     const apiKey = "AIzaSyDNIiyRSDZFSZXoZz1lasmM-KOXnMIhgSQ";
@@ -126,13 +111,12 @@ class App extends Component {
       streetViewControl: true
     });
     // ===============================================================================================================
-
     // =======================================================Markers=================================================
     const markers = [];
     const contents = [];
     let markerProps = [];
     const infowindow = new window.google.maps.InfoWindow();
-    this.state.places2
+    this.state.allPlaces
       .filter(location =>
         location.venue.name
           .toLowerCase()
@@ -142,23 +126,20 @@ class App extends Component {
         //create content string for each info window
 
         const contentString =
-          this.state.isLoading === false &&
-          this.state.error === null &&
-          this.state.requestSolved === true
+          !this.state.isloading || this.state.error !== null
             ? `<h1>${location.venue.name}</h1>
-             <p>Address:${location.venue.location.formattedAddress[0]}
+              <p>Address: ${location.venue.location.formattedAddress[0]}
              ${location.venue.location.formattedAddress[1]}
               ${location.venue.location.formattedAddress[2]}</p>
-              <p>lat: ${location.venue.location.lat.toFixed(2)},
-              lng: ${location.venue.location.lng.toFixed(2)}</p>
-              <h2>Powered By FourSquare</h2>
+              <p>lat: ${location.venue.location.lat},
+               long: ${location.venue.location.lng}</p>
+               <h2>Powered By FourSquare</h2>
           `
             : `
         <div class="info-content">
-        <h2>${location.venue.name}</h2>
-        <h4>Sorry,Cannot get Data</h4>
+        <h2>${location.name}</h2>
         </div>
-        <h2>Exceeded FourSquare API limit</h2>`;
+        <h3>Exceeded FourSquare API limit</h3>`;
         // create a marker for each location
         // let key;
         let animation = window.google.maps.Animation.DROP;
@@ -166,7 +147,7 @@ class App extends Component {
           position: new window.google.maps.LatLng(location.venue.location),
           // position: location.pos,
           map: map,
-          title: location.venue.name,
+          title: location.name,
           animation
         });
         //DOG
@@ -190,7 +171,7 @@ class App extends Component {
           marker.setAnimation(window.google.maps.Animation.BOUNCE);
           setTimeout(function() {
             marker.setAnimation(null);
-          }, 850);
+          }, 700);
         });
         // close info windows when map is clicked
         map.addListener("click", function() {

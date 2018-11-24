@@ -5,8 +5,9 @@ import PropTypes from "prop-types";
 import locations2 from "./data/newerPlaces3.json";
 import axios from "axios";
 // =========================================================COMPONENTS============================================
-import ErrorBoundary from "./components/ErrorBoundary";
-import Map from "./components/Map";
+import ErrorBoundary from "../ErrorBoundary";
+import Map from "../Map";
+// import InfoWindow from "./components/InfoWindow";
 import "./App.css";
 // ================================================================================================================
 
@@ -49,12 +50,13 @@ class App extends Component {
       // venueId: null,
       infowindow: "",
       contents: [],
-      venue2: []
+      venue2: [],
+      requestSolved: null
     };
   }
 
   componentDidMount() {
-    this.displayMap();
+    // this.displayMap();
     this.getPlaces("sights");
   }
 
@@ -64,7 +66,7 @@ class App extends Component {
       client_id: "QV5MGPULNHAO5GRFVSWB04I023O4HYR1EQUKGDSL23F5NVZO",
       client_secret: "4ETVXDDVKL0T0DASWLZK52052YDD04CNY0WUSHFQPBNTIWUI",
       query: query,
-      near: "18.938792382629718,72.82594448102758",
+      ll: "18.938792382629718,72.82594448102758",
       v: "20181123"
     };
 
@@ -76,12 +78,18 @@ class App extends Component {
         {
           allPlaces: response.data.response.groups[0].items,
           places: response.data.response.groups[0].items,
-          isLoading: false
+          isLoading: false,
+          requestSolved: true
         },
-        this.getID
+        // this.getID
+        this.displayMap
       );
     } catch (error) {
-      this.setState({ error: error, isLoading: false }, this.getID);
+      this.setState(
+        { error: error, isLoading: false, requestSolved: false },
+        this.displayMap
+        // this.getID
+      );
     }
   };
 
@@ -93,7 +101,11 @@ class App extends Component {
       });
       console.log("finally", venueId);
       console.log("finally2", this.state.allPlaces);
-      this.setState({ places2: venueId });
+      // this.setState({ places2: venueId });
+      // this.displayMap();
+    } else {
+      // this.displayMap();
+      console.log("you bombed");
     }
   };
   // =================================================MAP FUNCT=====================================================
@@ -103,6 +115,10 @@ class App extends Component {
       `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap`
     );
     window.initMap = this.initMap.bind(this);
+    if (this.state.requestSolved === true) {
+      this.setState({ places2: this.state.places });
+      console.log("I have setState ", this.state.places2);
+    }
     // this.getID();
   };
   // ======================================================MAP INIT=================================================
@@ -118,6 +134,7 @@ class App extends Component {
       streetViewControl: true
     });
     // ===============================================================================================================
+
     // =======================================================Markers=================================================
     const markers = [];
     const contents = [];
@@ -133,7 +150,9 @@ class App extends Component {
         //create content string for each info window
 
         const contentString =
-          !this.state.isloading && this.state.error === null
+          this.state.isLoading === false &&
+          this.state.error === null &&
+          this.state.requestSolved === true
             ? `<h1>${location.venue.name}</h1>
               <p>Address: ${location.venue.location.formattedAddress[0]}
              ${location.venue.location.formattedAddress[1]}
@@ -155,7 +174,7 @@ class App extends Component {
           position: new window.google.maps.LatLng(location.venue.location),
           // position: location.pos,
           map: map,
-          title: location.name,
+          title: location.venue.name,
           animation
         });
         //DOG
@@ -189,8 +208,10 @@ class App extends Component {
         });
       });
     this.setState({ map, markers, infowindow, contents, loaded: true });
+    this.setState({ map, loaded: true });
   }
   //===================================================================================================================
+  getMarkerInfo = (marker, map) => {};
 
   //=======================================================RENDER======================================================
   render() {
