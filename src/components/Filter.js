@@ -7,14 +7,14 @@ class Filter extends Component {
     const { infowindow, map, contents, markers } = this.props;
     // filter the markers that match the specific location name then onClick show info window
     markers
-      .filter(marker => marker.title === location.venue.name)
+      .filter(marker => marker.title === location.venue.id)
       .forEach(marker => {
         infowindow.setContent(
           String(
             contents.filter(content =>
               String(content)
                 .slice(8)
-                .includes(location.venue.name)
+                .includes(location.venue.name.toUpperCae())
             )
           )
         );
@@ -38,11 +38,11 @@ class Filter extends Component {
         <ul>
           {places2
             .filter(location => match.test(location.venue.name))
-            .map((location, index) => {
+            .map((location, id) => {
               return (
                 <li
                   className="list-item"
-                  key={index}
+                  key={id}
                   onClick={this.handleClicks}
                   tabIndex={0}
                 >
