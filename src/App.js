@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import escapeRegExp from "escape-string-regexp";
 import locations2 from "./data/newerPlaces3.json";
 // =========================================================COMPONENTS============================================
 import ErrorBoundary from "./components/ErrorBoundary";
 import Map from "./components/Map";
 import "./App.css";
+import Sidebar from "./components/sidebar";
+import Filter from "./components/Filter";
 // ================================================================================================================
 const axios = require("axios");
 class App extends Component {
@@ -44,7 +47,9 @@ class App extends Component {
       allPlaces: [],
       places: [],
       markers: [],
-      contents: []
+      contents: [],
+      filtered: [],
+      hideMarkers: []
     };
   }
 
@@ -53,13 +58,13 @@ class App extends Component {
   }
 
   getPlaces = query => {
-    const endPoint = "https://api.foursquare.com/v2/venues/explore?";
+    const endPoint = `https://api.foursquare.com/v2/venues/explore?`;
     const params = {
-      client_id: "QV5MGPULNHAO5GRFVSWB04I023O4HYR1EQUKGDSL23F5NVZO",
-      client_secret: "4ETVXDDVKL0T0DASWLZK52052YDD04CNY0WUSHFQPBNTIWUI",
+      client_id: `QV5MGPULNHAO5GRFVSWB04I023O4HYR1EQUKGDSL23F5NVZO`,
+      client_secret: `4ETVXDDVKL0T0DASWLZK52052YDD04CNY0WUSHFQPBNTIWUI`,
       query: query,
-      ll: "18.938792382629718,72.82594448102758",
-      v: "20181123"
+      ll: `18.938792382629718,72.82594448102758`,
+      v: `20181123`
     };
 
     // Fetch
@@ -100,7 +105,7 @@ class App extends Component {
 
   // =================================================MAP FUNCT=====================================================
   displayMap = () => {
-    const apiKey = "AIzaSyDNIiyRSDZFSZXoZz1lasmM-KOXnMIhgSQ";
+    const apiKey = `AIzaSyDNIiyRSDZFSZXoZz1lasmM-KOXnMIhgSQ`;
     loadJS(
       `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap`
     );
@@ -138,7 +143,7 @@ class App extends Component {
           this.state.error === null &&
           this.state.requestSolved === true
             ? `<div class="info-content">
-              <h1>${location.venue.name}</h1>
+              <h1>${location.venue.name.toUpperCase()}</h1>
               <p>Address:${location.venue.location.formattedAddress[0]}
               ${location.venue.location.formattedAddress[1]}
               ${location.venue.location.formattedAddress[2]}</p>
@@ -148,8 +153,8 @@ class App extends Component {
           `
             : `
               <div class="info-content">
-              <h1>${location.venue.name}</h1>
-              <h3>Sorry,Cannot get Data</h3>
+              <h1>${location.venue.name.toUpperCase()}</h1>
+              <h3>${"Sorry,Cannot get Data".toUpperCase()}</h3>
               <h2>Exceeded FourSquare API limit</h2></div>`;
         // create a marker for each location
         let animation = window.google.maps.Animation.DROP;
@@ -158,9 +163,10 @@ class App extends Component {
           // position: location.pos,
           map: map,
           title: location.venue.name,
+          id: location.venue.id,
           animation
         });
-        location.marker = marker;
+        // location.marker = marker;
         location.display = true;
         markers.push(marker);
         contents.push(contentString);
@@ -178,20 +184,67 @@ class App extends Component {
         map.addListener("click", () => {
           if (infowindow) {
             infowindow.close();
-          } else {
-            this.state.map.setCenter(marker.getPosition());
-            this.state.map.panBy(0, -200);
+            map.setCenter(marker.position);
           }
         });
       });
     this.setState({ map, markers, infowindow, contents, loaded: true });
   }
   //===================================================================================================================
+  handleFilter = query => {
+    // set state of query, setting visibility of each marker
+    this.setState({ query: query.trim() });
+    this.state.markers.map(marker => marker.setVisible(true));
+    // filter locations based on query, set state of filtered
+    if (this.state.query) {
+      const match = new RegExp(escapeRegExp(query), "i");
+      const filtered = this.state.places2.filter(location =>
+        match.test(location.venue.name.trim())
+      );
+      this.setState({ filtered });
+      // hide markers that are not searched for and update its state
+      const hideMarkers = this.state.markers.filter(marker =>
+        filtered.every(
+          filteredLocation => filteredLocation.venue.name !== marker.title
+        )
+      );
+      hideMarkers.forEach(marker => marker.setVisible(false));
+      this.setState({ hideMarkers });
+    } else {
+      this.state.markers.forEach(marker => marker.setVisible(true));
+    }
+  };
 
   //=======================================================RENDER======================================================
   render() {
+    const {
+      query,
+      map,
+      markers,
+      contents,
+      infowindow,
+      filtered,
+      hideMarkers,
+      places2
+    } = this.state;
     return (
       <main className="App">
+        <ErrorBoundary>
+          <Sidebar value={query} handleFilter={this.handleFilter} />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <Filter
+            query={query}
+            // locations={places2}
+            places2={places2}
+            map={map}
+            markers={markers}
+            contents={contents}
+            infowindow={infowindow}
+            filtered={filtered}
+            hideMarkers={hideMarkers}
+          />
+        </ErrorBoundary>
         <ErrorBoundary>
           <Map />
         </ErrorBoundary>
