@@ -66,7 +66,7 @@ class App extends Component {
       ll: `18.938792382629718,72.82594448102758`,
       v: `20181123`
     };
-
+    // near: "mumbai",
     // Fetch
     axios
       .get(endPoint + new URLSearchParams(params))
@@ -130,10 +130,10 @@ class App extends Component {
     const contents = [];
     const infowindow = new window.google.maps.InfoWindow();
     this.state.places2
-      .filter(location =>
-        location.venue.name
-          .toLowerCase()
-          .includes(this.state.query.toLowerCase())
+      .filter(
+        location => location.venue.name
+        // .toLowerCase()
+        // .includes(this.state.query.toLowerCase())
       )
       .forEach(location => {
         //create content string for each info window
@@ -167,7 +167,7 @@ class App extends Component {
           animation
         });
         // location.marker = marker;
-        location.display = true;
+        // location.display = true;
         markers.push(marker);
         contents.push(contentString);
         // set the info window content to location info and open on marker click
@@ -184,7 +184,7 @@ class App extends Component {
         map.addListener("click", () => {
           if (infowindow) {
             infowindow.close();
-            map.setCenter(marker.position);
+            // map.setCenter(marker.position);
           }
         });
       });
@@ -196,10 +196,11 @@ class App extends Component {
     this.setState({ query: query.trim() });
     this.state.markers.map(marker => marker.setVisible(true));
     // filter locations based on query, set state of filtered
-    if (this.state.query) {
+    //don't implement this.state.query is truthy here IMP
+    if (query) {
       const match = new RegExp(escapeRegExp(query), "i");
       const filtered = this.state.places2.filter(location =>
-        match.test(location.venue.name.trim())
+        match.test(location.venue.name)
       );
       this.setState({ filtered });
       // hide markers that are not searched for and update its state
