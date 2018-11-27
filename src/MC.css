@@ -1,0 +1,87 @@
+.App {
+  text-align: center;
+}
+
+/* Top nav bar */
+
+.map-nav-container {
+  overflow: hidden;
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+}
+
+.map-nav {
+  position: relative;
+  background: white;
+  display: flex;
+  padding: 0.8rem;
+  width: 100%;
+}
+
+.nav-title {
+  margin: auto;
+}
+
+.nav-title h1 {
+  margin: 0;
+}
+
+.nav-title h4 {
+  margin: 0;
+}
+
+/* Hamburger from W3 schools */
+
+.hamburger-container {
+  margin-left: 0.2rem;
+  cursor: pointer;
+  padding: 5px;
+  border: 0;
+  background-color: white;
+}
+
+.hamburger-bar {
+  width: 35px;
+  height: 5px;
+  background-color: black;
+  margin: 6px 0;
+}
+
+/* Sidebar */
+
+.map-sidebar {
+  position: absolute;
+  width: 250px;
+  margin-top: 75px;
+  height: calc(100% - 76px);
+  background-color: white;
+  border-top: 1px solid;
+  transform: translate(-250px);
+  z-index: 1;
+}
+
+.sidebar-input {
+  margin-top: 1rem;
+}
+
+.map-sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.map-sidebar li {
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.map-sidebar li:hover {
+  background-color: black;
+  color: white;
+}
+
+/* ErrorScreen */
+
+.error-screen-message {
+  text-align: center;
+}

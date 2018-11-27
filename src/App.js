@@ -6,8 +6,11 @@ import locations2 from "./data/newerPlaces3.json";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Map from "./components/Map";
 import "./App.css";
+// import "./MC.css";
 import Sidebar from "./components/sidebar";
 import Filter from "./components/Filter";
+import Toggle from "./components/Toggle";
+
 // ================================================================================================================
 const axios = require("axios");
 class App extends Component {
@@ -19,7 +22,7 @@ class App extends Component {
   };
 
   static defaultProps = {
-    zoom: 14.5,
+    zoom: 14,
     initialCenter: {
       lat: 18.938792382629718,
       lng: 72.82594448102758
@@ -88,24 +91,25 @@ class App extends Component {
         });
       })
       .then(() => {
-        this.getmap();
+        // this.getmap();
         if (this.state.requestSolved === true) {
           this.setState({ places2: this.state.places });
           console.log("I have setState ", this.state.places);
         }
+        this.displayMap();
         // always executed
       });
   };
 
-  getmap = () => {
-    this.displayMap();
-  };
+  // getmap = () => {
+  //   this.displayMap();
+  // };
 
   // ==============================================================================================================
 
   // =================================================MAP FUNCT=====================================================
   displayMap = () => {
-    const apiKey = `AIzaSyDNIiyRSDZFSZXoZz1lasmM-KOXnMIhgSQ`;
+    const apiKey = `AIzaSyBuOtZ4Xw9Wo4EK96HJ5Xmrs4Rz9sv5P1c`;
     loadJS(
       `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap`
     );
@@ -121,7 +125,8 @@ class App extends Component {
       zoom: this.props.zoom,
       mapTypeId: "roadmap",
       mapTypeControl: false,
-      streetViewControl: true
+      streetViewControl: true,
+      scroll: true
     });
     // ===============================================================================================================
 
@@ -142,8 +147,8 @@ class App extends Component {
           this.state.isLoading === false &&
           this.state.error === null &&
           this.state.requestSolved === true
-            ? `<div class="info-content">
-              <h1>${location.venue.name.toUpperCase()}</h1>
+            ? `<div class="info-content" tabIndex=0>
+              <h1>${location.venue.name}</h1>
               <p>Address:${location.venue.location.formattedAddress[0]}
               ${location.venue.location.formattedAddress[1]}
               ${location.venue.location.formattedAddress[2]}</p>
@@ -152,8 +157,8 @@ class App extends Component {
               <h2>Powered By FourSquare</h2></div>
           `
             : `
-              <div class="info-content">
-              <h1>${location.venue.name.toUpperCase()}</h1>
+              <div class="info-content" tabIndex=0>
+              <h1>${location.venue.name}</h1>
               <h3>${"Sorry,Cannot get Data".toUpperCase()}</h3>
               <h2>Exceeded FourSquare API limit</h2></div>`;
         // create a marker for each location
@@ -178,7 +183,7 @@ class App extends Component {
           marker.setAnimation(window.google.maps.Animation.BOUNCE);
           setTimeout(() => {
             marker.setAnimation(null);
-          }, 850);
+          }, 600);
         });
         // close info windows when map is clicked
         map.addListener("click", () => {
@@ -193,7 +198,8 @@ class App extends Component {
   //===================================================================================================================
   handleFilter = query => {
     // set state of query, setting visibility of each marker
-    this.setState({ query: query.trim() });
+    //.trim() in setstae messes up the lsit and marker view
+    this.setState({ query: query });
     this.state.markers.map(marker => marker.setVisible(true));
     // filter locations based on query, set state of filtered
     //don't implement this.state.query is truthy here IMP
@@ -202,7 +208,7 @@ class App extends Component {
       const filtered = this.state.places2.filter(location =>
         match.test(location.venue.name)
       );
-      this.setState({ filtered });
+      // this.setState({ filtered });
       // hide markers that are not searched for and update its state
       const hideMarkers = this.state.markers.filter(marker =>
         filtered.every(
@@ -210,46 +216,56 @@ class App extends Component {
         )
       );
       hideMarkers.forEach(marker => marker.setVisible(false));
-      this.setState({ hideMarkers });
+      // this.setState({ hideMarkers });
     } else {
       this.state.markers.forEach(marker => marker.setVisible(true));
     }
   };
+  // ===================================================================================================================
+  triggerMarkerClick = placeid => {
+    this.state.markers.map(marker => {
+      if (marker.id === placeid) {
+        window.google.maps.event.trigger(marker, "click");
+      }
+      return marker;
+    });
+  };
+  //====================================================================================================================
 
   //=======================================================RENDER======================================================
   render() {
     const {
       query,
-      map,
+      // map,
       markers,
-      contents,
-      infowindow,
-      filtered,
-      hideMarkers,
+      // contents,
+      // infowindow,
+      // filtered,
+      // hideMarkers,
       places2
     } = this.state;
     return (
-      <main className="App">
+      <div className="container">
+        {/* <main className="App"> */}
+        <ErrorBoundary>
+          <Toggle />
+        </ErrorBoundary>
         <ErrorBoundary>
           <Sidebar value={query} handleFilter={this.handleFilter} />
         </ErrorBoundary>
         <ErrorBoundary>
           <Filter
             query={query}
-            // locations={places2}
             places2={places2}
-            map={map}
+            triggerMarkerClick={this.triggerMarkerClick}
             markers={markers}
-            contents={contents}
-            infowindow={infowindow}
-            filtered={filtered}
-            hideMarkers={hideMarkers}
           />
         </ErrorBoundary>
+        {/* </main> */}
         <ErrorBoundary>
           <Map />
         </ErrorBoundary>
-      </main>
+      </div>
     );
   }
 }
