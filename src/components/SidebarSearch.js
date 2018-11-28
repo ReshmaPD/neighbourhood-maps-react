@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const sidebar = props => {
+const SidebarSearch = props => {
   return (
     <div className="map-sidebar-search">
       <label htmlFor="searchPlaces">Find Places </label>
@@ -19,9 +19,9 @@ const sidebar = props => {
   );
 };
 
-sidebar.propTypes = {
+SidebarSearch.propTypes = {
   handleFilter: PropTypes.func.isRequired,
   query: PropTypes.string
 };
 
-export default sidebar;
+export default SidebarSearch;

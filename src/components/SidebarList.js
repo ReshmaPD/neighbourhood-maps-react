@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import sortBy from "sort-by";
 import escapeRegExp from "escape-string-regexp";
 
-const Filter = props => {
+const SidebarList = props => {
   const match = new RegExp(escapeRegExp(props.query), "i");
   return (
     <div className="map-sidebar" aria-label="List">
@@ -34,11 +34,11 @@ const Filter = props => {
   );
 };
 
-Filter.propTypes = {
+SidebarList.propTypes = {
   triggerMarkerClick: PropTypes.func.isRequired,
   places2: PropTypes.array.isRequired,
   filtered: PropTypes.array.isRequired,
   query: PropTypes.string
 };
 
-export default Filter;
+export default SidebarList;

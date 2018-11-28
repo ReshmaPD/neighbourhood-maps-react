@@ -1,19 +1,18 @@
 import React, { Component } from "react";
+import "./App.css";
 import PropTypes from "prop-types";
 import escapeRegExp from "escape-string-regexp";
-import locations2 from "./data/newerPlaces3.json";
+import locations2 from "./data/Places3.json";
 // =========================================================COMPONENTS============================================
 import ErrorBoundary from "./components/ErrorBoundary";
+import ToggleSidebar from "./components/ToggleSidebar";
+import SidebarSearch from "./components/SidebarSearch";
+import SidebarList from "./components/SidebarList";
 import Map from "./components/Map";
-import "./App.css";
-import Sidebar from "./components/sidebar";
-import Filter from "./components/Filter";
-import Toggle from "./components/Toggle";
-
 // ================================================================================================================
 const axios = require("axios");
 class App extends Component {
-  // ====================================================STATIC========================================================
+  // ====================================================DEFAULT====================================================
   static propTypes = {
     google: PropTypes.object,
     zoom: PropTypes.number,
@@ -26,9 +25,8 @@ class App extends Component {
       lat: 18.938792382629718,
       lng: 72.82594448102758
     }
-    // alllocations: locations2
   };
-  // =======================================================CONSTRUCTOR STATE============================================
+  // =======================================================CONSTRUCTOR & STATE=======================================
   constructor(props) {
     super(props);
     const { lat, lng } = this.props.initialCenter;
@@ -46,20 +44,14 @@ class App extends Component {
       places2: locations2,
       places: [],
       filtered: [],
-      hideMarkers: [],
-      markers: [],
-
-      allPlaces: [],
-      contents: [],
-      infowindow: "",
-      alllocations: locations2
+      markers: []
     };
   }
 
   componentDidMount() {
     this.getPlaces("sights");
   }
-
+  // ==============================================================================================================
   getPlaces = query => {
     const endPoint = `https://api.foursquare.com/v2/venues/explore?`;
     const params = {
@@ -69,15 +61,13 @@ class App extends Component {
       ll: `18.938792382629718,72.82594448102758`,
       v: `20181123`
     };
-    // near: "mumbai",
-    // ll: `18.938792382629718,72.82594448102758`,
-    // Fetch
+
+    // Asynchronous API Requests
     axios
       .get(endPoint + new URLSearchParams(params))
       .then(response => {
         console.log(response);
         this.setState({
-          allPlaces: response.data.response.groups[0].items,
           places: response.data.response.groups[0].items,
           isLoading: false,
           requestSolved: true
@@ -92,7 +82,6 @@ class App extends Component {
         });
       })
       .then(() => {
-        // this.getmap();
         if (this.state.requestSolved === true) {
           this.setState({ places2: this.state.places });
           console.log("I have setState ", this.state.places);
@@ -102,13 +91,7 @@ class App extends Component {
       });
   };
 
-  // getmap = () => {
-  //   this.displayMap();
-  // };
-
-  // ==============================================================================================================
-
-  // =================================================MAP FUNCT=====================================================
+  // =================================================MAP FUNCT==========================================================
   displayMap = () => {
     const apiKey = `AIzaSyBuOtZ4Xw9Wo4EK96HJ5Xmrs4Rz9sv5P1c`;
     loadJS(
@@ -120,27 +103,22 @@ class App extends Component {
   initMap() {
     const { lat, lng } = this.state.currentLocation;
     const mapview = document.getElementById("map");
-    // mapview.style.height = window.innerHeight + "px";
-    var map = new window.google.maps.Map(mapview, {
+    const map = new window.google.maps.Map(mapview, {
       center: { lat: lat, lng: lng },
       zoom: this.props.zoom,
       mapTypeId: "roadmap",
       mapTypeControl: false,
       streetViewControl: true,
-      scroll: true
+      scroll: true,
+      gestureHandling: "cooperative"
     });
     // ===============================================================================================================
 
-    // =======================================================Markers=================================================
+    // =======================================================MARKERS & INFOWINDOW=================================================
     const markers = [];
-    const contents = [];
     const infowindow = new window.google.maps.InfoWindow();
     this.state.places2
-      .filter(
-        location => location.venue.name
-        // .toLowerCase()
-        // .includes(this.state.query.toLowerCase())
-      )
+      .filter(location => location.venue.name)
       .forEach(location => {
         //create content string for each info window
 
@@ -166,16 +144,12 @@ class App extends Component {
         let animation = window.google.maps.Animation.DROP;
         let marker = new window.google.maps.Marker({
           position: new window.google.maps.LatLng(location.venue.location),
-          // position: location.pos,
           map: map,
           title: location.venue.name,
           id: location.venue.id,
           animation
         });
-        // location.marker = marker;
-        // location.display = true;
         markers.push(marker);
-        contents.push(contentString);
         // set the info window content to location info and open on marker click
         marker.addListener("click", () => {
           infowindow.setContent(contentString);
@@ -190,39 +164,37 @@ class App extends Component {
         map.addListener("click", () => {
           if (infowindow) {
             infowindow.close();
-            // map.setCenter(marker.position);
           }
         });
       });
-    this.setState({ map, markers, infowindow, contents, loaded: true });
+    this.setState({ map, markers, loaded: true });
   }
-  //===================================================================================================================
+  //=============================================================event-handling======================================================
   handleFilter = query => {
     // set state of query, setting visibility of each marker
-    //.trim() in setstae messes up the lsit and marker view
+
     this.setState({ query: query });
     this.state.markers.map(marker => marker.setVisible(true));
     // filter locations based on query, set state of filtered
-    //don't implement this.state.query is truthy here IMP
+
     if (query) {
       const match = new RegExp(escapeRegExp(query), "i");
       const filtered = this.state.places2.filter(location =>
         match.test(location.venue.name)
       );
       this.setState({ filtered });
-      // hide markers that are not searched for and update its state
+      // hide markers that are not searched for
       const hideMarkers = this.state.markers.filter(marker =>
         filtered.every(
           filteredLocation => filteredLocation.venue.id !== marker.id
         )
       );
       hideMarkers.forEach(marker => marker.setVisible(false));
-      // this.setState({ hideMarkers });
     } else {
       this.state.markers.forEach(marker => marker.setVisible(true));
     }
   };
-  // ===================================================================================================================
+  // =============================================================event-handling======================================================
   triggerMarkerClick = placeid => {
     this.state.markers.map(marker => {
       if (marker.id === placeid) {
@@ -240,15 +212,15 @@ class App extends Component {
       <div className="container">
         <header>
           <ErrorBoundary>
-            <Toggle />
+            <ToggleSidebar />
           </ErrorBoundary>
         </header>
         <aside className="side">
           <ErrorBoundary>
-            <Sidebar value={query} handleFilter={this.handleFilter} />
+            <SidebarSearch value={query} handleFilter={this.handleFilter} />
           </ErrorBoundary>
           <ErrorBoundary>
-            <Filter
+            <SidebarList
               query={query}
               places2={places2}
               triggerMarkerClick={this.triggerMarkerClick}
@@ -266,10 +238,7 @@ class App extends Component {
   }
 }
 //===========================================================END OF CLASS==============================================
-/**
- * @param {url}Load the google maps using script url
- * reference-Resources[1]
- */
+//Load the google maps using script url- reference-Resources[1]
 function loadJS(url) {
   let ref = window.document.getElementsByTagName("script")[0];
   let script = window.document.createElement("script");

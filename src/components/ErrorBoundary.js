@@ -10,7 +10,7 @@ class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    // Catch errors in any child components and re-renders with an error message
+    // Catch errors in any child components
     this.setState({
       error: error,
       errorInfo: errorInfo
@@ -21,17 +21,17 @@ class ErrorBoundary extends Component {
     if (this.state.error) {
       // Fallback UI if an error occurs
       return (
-        <div>
+        <div className="red">
           <h2>{"Oh-no! Something went wrong"}</h2>
-          <p className="red">
-            {this.state.error && this.state.error.toString()}
+          <p>
+            {
+              "The site could be temporarily unavailable or too busy. Try again in a few moments."
+            }
           </p>
-          <div>{"Component Stack Error Details: "}</div>
-          <p className="red">{this.state.errorInfo.componentStack}</p>
         </div>
       );
     }
-    // component normally just renders children
+
     return this.props.children;
   }
 }
