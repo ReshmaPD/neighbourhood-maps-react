@@ -6,7 +6,6 @@ import locations2 from "./data/newerPlaces3.json";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Map from "./components/Map";
 import "./App.css";
-// import "./MC.css";
 import Sidebar from "./components/sidebar";
 import Filter from "./components/Filter";
 import Toggle from "./components/Toggle";
@@ -40,19 +39,20 @@ class App extends Component {
       },
       map: "",
       query: "",
-      infowindow: "",
       error: null,
       requestSolved: null,
       isLoading: true,
       loaded: false,
       places2: locations2,
-      alllocations: locations2,
-      allPlaces: [],
       places: [],
-      markers: [],
-      contents: [],
       filtered: [],
-      hideMarkers: []
+      hideMarkers: [],
+      markers: [],
+
+      allPlaces: [],
+      contents: [],
+      infowindow: "",
+      alllocations: locations2
     };
   }
 
@@ -70,6 +70,7 @@ class App extends Component {
       v: `20181123`
     };
     // near: "mumbai",
+    // ll: `18.938792382629718,72.82594448102758`,
     // Fetch
     axios
       .get(endPoint + new URLSearchParams(params))
@@ -208,11 +209,11 @@ class App extends Component {
       const filtered = this.state.places2.filter(location =>
         match.test(location.venue.name)
       );
-      // this.setState({ filtered });
+      this.setState({ filtered });
       // hide markers that are not searched for and update its state
       const hideMarkers = this.state.markers.filter(marker =>
         filtered.every(
-          filteredLocation => filteredLocation.venue.name !== marker.title
+          filteredLocation => filteredLocation.venue.id !== marker.id
         )
       );
       hideMarkers.forEach(marker => marker.setVisible(false));
@@ -234,37 +235,32 @@ class App extends Component {
 
   //=======================================================RENDER======================================================
   render() {
-    const {
-      query,
-      // map,
-      markers,
-      // contents,
-      // infowindow,
-      // filtered,
-      // hideMarkers,
-      places2
-    } = this.state;
+    const { query, places2, filtered } = this.state;
     return (
       <div className="container">
-        {/* <main className="App"> */}
-        <ErrorBoundary>
-          <Toggle />
-        </ErrorBoundary>
-        <ErrorBoundary>
-          <Sidebar value={query} handleFilter={this.handleFilter} />
-        </ErrorBoundary>
-        <ErrorBoundary>
-          <Filter
-            query={query}
-            places2={places2}
-            triggerMarkerClick={this.triggerMarkerClick}
-            markers={markers}
-          />
-        </ErrorBoundary>
-        {/* </main> */}
-        <ErrorBoundary>
-          <Map />
-        </ErrorBoundary>
+        <header>
+          <ErrorBoundary>
+            <Toggle />
+          </ErrorBoundary>
+        </header>
+        <aside className="side">
+          <ErrorBoundary>
+            <Sidebar value={query} handleFilter={this.handleFilter} />
+          </ErrorBoundary>
+          <ErrorBoundary>
+            <Filter
+              query={query}
+              places2={places2}
+              triggerMarkerClick={this.triggerMarkerClick}
+              filtered={filtered}
+            />
+          </ErrorBoundary>
+        </aside>
+        <main className="map-container">
+          <ErrorBoundary>
+            <Map />
+          </ErrorBoundary>
+        </main>
       </div>
     );
   }

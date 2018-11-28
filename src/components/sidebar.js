@@ -4,8 +4,9 @@ import PropTypes from "prop-types";
 const sidebar = props => {
   return (
     <div className="map-sidebar-search">
-      <label htmlFor="searchQuery">Find A Place!</label>
+      <label htmlFor="searchPlaces">Find Places </label>
       <input
+        autoFocus={true}
         type="text"
         placeholder="Search Places"
         className="sidebar-input"
@@ -19,7 +20,8 @@ const sidebar = props => {
 };
 
 sidebar.propTypes = {
-  handleFilter: PropTypes.func.isRequired
+  handleFilter: PropTypes.func.isRequired,
+  query: PropTypes.string
 };
 
 export default sidebar;

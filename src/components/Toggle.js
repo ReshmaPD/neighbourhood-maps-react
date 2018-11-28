@@ -20,6 +20,7 @@ class Toggle extends Component {
     } else {
       sidebar.style.transform = "translateX(0px)";
       sidebar1.style.transform = "translateX(0px)";
+
       this.setState({ toggleOn: true });
     }
   };

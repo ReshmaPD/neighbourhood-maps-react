@@ -5,6 +5,11 @@ body {
   height: 100%;
 }
 
+#map {
+  width: 100%;
+  height: calc(100vh - 55px);
+}
+
 .App {
   text-align: center;
 }
@@ -19,10 +24,11 @@ body {
 }
 
 .toggle-menu {
-  align-self: flex-start;
+  align-self: center;
   cursor: pointer;
   width: 60px;
   height: 40px;
+  outline: none;
 }
 
 .fa-bars {
@@ -40,10 +46,15 @@ body {
 .nav-title h1 {
   margin: 0;
   text-align: center;
+  font-size: 30px;
+  letter-spacing: 0.1em;
 }
 
 label {
   visibility: hidden;
+  display: block;
+  width: 0;
+  height: 0;
 }
 
 .map-sidebar,
@@ -62,13 +73,13 @@ label {
 }
 
 .sidebar-input {
-  margin-top: 1rem;
+  margin: 1rem 0 1rem 2rem;
   height: 30px;
-  width: 220px;
+  width: 270px;
   align-self: center;
   text-align: center;
   color: rgb(29, 29, 29);
-  font-size: 1.1em;
+  /* font-size: 1.1em; */
 }
 
 .map-sidebar {
@@ -81,86 +92,77 @@ label {
   display: flex;
   flex-flow: column;
   justify-content: center;
-  text-align: center;
+  text-align: left;
   list-style-type: none;
-  align-items: center;
+  align-items: flex-start;
+  padding-right: 1%;
 }
 
 .map-sidebar li {
   padding: 0.75rem;
   cursor: pointer;
+  letter-spacing: 0.1em;
+}
+
+.info-content {
+  padding: 0;
+  background: #fff;
+  width: 100%;
+  max-width: 260px;
+  text-align: center;
 }
 
 .error-screen-message {
   text-align: center;
 }
-#map {
-  width: 100%;
-  height: calc(100vh - 55px);
+
+.map-sidebar-search input {
+  font-size: 1.1em;
 }
 
-/* .map-sidebar-search {
-  background-color: #282c34;
-  color: white;
-  width: 350px;
-  position: absolute;
-  z-index: 99;
-  transform: translate(-350px);
-  transition: transform 0.3s;
+.map-sidebar-search input:focus {
+  outline: 3px solid #e86c63;
+}
 
-  height: 65px;
-} */
+.map-sidebar-search input::placeholder {
+  font-size: 1em;
+}
 
-/* .map-sidebar {
-  background-color: #282c34;
-  color: white;
-  width: 350px;
-  position: absolute;
-  z-index: 99;
-  transform: translate(-350px);
-  transition: transform 0.3s;
+.list-item:hover {
+  background-color: #999;
+  color: #fff;
+}
 
-  margin-top: 65px;
-  height: 82vh;
-  border-top: 1px solid;
-} */
-/* @media all and (max-width: 767px) {
-  #map {
-    width: 100%;
+.list-item:focus {
+  outline: 2px solid #e86c63;
+}
+
+.info-content:focus {
+  outline: 2px solid #e86c63;
+}
+
+.toggle-menu:focus {
+  outline: 2px solid #e86c63;
+}
+
+@media all and (max-width: 349px) {
+  .map-sidebar {
+    overflow-y: scroll;
+    height: 78vh;
+    width: 300px;
   }
-} */
-
-/*
-#map {
-  height: 100vh;
-  height: calc(100vh - 66px);
-  width: 100%; IMP DONT CHANGE
-  margin-left: auto;
-  margin-right: auto;
-} */
-/* main {
-  background-color: #282c34;
-  max-height: 100vh;
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-  padding: 5px;
-} */
-/* .map-sidebar {
-  position: fixed;
-  width: 250px;
-  left: -100%;
-  transition: all 500ms ease-in-out;
-  z-index: 99;
-} */
-/* .map-sidebar.toggle {
-  left: 0;
-} */
-/* Toggle.propTypes = {
-  onClickToggle: PropTypes.func,
-  toggleOn: PropTypes.bool
-}; */
+  .map-sidebar-search {
+    width: 300px;
+  }
+  .sidebar-input {
+    margin-top: 1rem;
+    height: 20px;
+    width: 220px;
+  }
+}
+@media all and (max-width: 600px) {
+  .map-sidebar {
+    overflow-y: scroll;
+    height: 78vh;
+  }
+}
