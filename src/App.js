@@ -3,16 +3,15 @@ import "./App.css";
 import PropTypes from "prop-types";
 import escapeRegExp from "escape-string-regexp";
 import locations2 from "./data/Places3.json";
-// =========================================================COMPONENTS============================================
+// =========================================================COMPONENTS============================================================
 import ErrorBoundary from "./components/ErrorBoundary";
 import ToggleSidebar from "./components/ToggleSidebar";
 import SidebarSearch from "./components/SidebarSearch";
 import SidebarList from "./components/SidebarList";
 import Map from "./components/Map";
-// ================================================================================================================
 const axios = require("axios");
 class App extends Component {
-  // ====================================================DEFAULT====================================================
+  // ========================================================DEFAULT===============================================================
   static propTypes = {
     google: PropTypes.object,
     zoom: PropTypes.number,
@@ -26,7 +25,7 @@ class App extends Component {
       lng: 72.82594448102758
     }
   };
-  // =======================================================CONSTRUCTOR & STATE=======================================
+  // =====================================================CONSTRUCTOR & STATE=======================================================
   constructor(props) {
     super(props);
     const { lat, lng } = this.props.initialCenter;
@@ -47,11 +46,11 @@ class App extends Component {
       markers: []
     };
   }
-
+  //good place to make api requests
   componentDidMount() {
     this.getPlaces("sights");
   }
-  // ==============================================================================================================
+  // ================================================================================================================================
   getPlaces = query => {
     const endPoint = `https://api.foursquare.com/v2/venues/explore?`;
     const params = {
@@ -62,7 +61,13 @@ class App extends Component {
       v: `20181123`
     };
 
-    // Asynchronous API Requests
+    /**
+     * Asynchronous API Requests are made such that we request for data using the above parameters, with the query and latlng set
+     * if the request is succes we handle success by logging the response and from that get the data.response put that data in a state
+     * also set state to indicate the request is solved and move to the callback, to get displaymap which is always exectued, even if we
+     * get an error and our request is not a success, in that case we handle the error and updating the state of error to indicate failure
+     * which is given the always executed callback which determines whether to change the state of our static json data
+     */
     axios
       .get(endPoint + new URLSearchParams(params))
       .then(response => {
@@ -91,7 +96,9 @@ class App extends Component {
       });
   };
 
-  // =================================================MAP FUNCT==========================================================
+  // ========================================================MAP FUNCT==================================================================
+  // Connect the initMap() function within this class to the global window context,so Google Maps can invoke it
+  // Asynchronously load the Google Maps script, passing in the callback reference
   displayMap = () => {
     const apiKey = `AIzaSyBuOtZ4Xw9Wo4EK96HJ5Xmrs4Rz9sv5P1c`;
     loadJS(
@@ -99,7 +106,7 @@ class App extends Component {
     );
     window.initMap = this.initMap.bind(this);
   };
-  // ======================================================MAP INIT=================================================
+  // ========================================================MAP INIT=====================================================================
   initMap() {
     const { lat, lng } = this.state.currentLocation;
     const mapview = document.getElementById("map");
@@ -112,15 +119,18 @@ class App extends Component {
       scroll: true,
       gestureHandling: "cooperative"
     });
-    // ===============================================================================================================
 
-    // =======================================================MARKERS & INFOWINDOW=================================================
+    // =======================================================MARKERS & INFOWINDOW====================================================
     const markers = [];
     const infowindow = new window.google.maps.InfoWindow();
     this.state.places2
       .filter(location => location.venue.name)
       .forEach(location => {
-        //create content string for each info window
+        /**
+         *contentsrting creates content for infowindow based of of ternary, if the api request was success set the content based on
+         *the content data from the api source while also giving the attribution, else if request fails, set the content with our data
+         *containing the location venue name and also indicate that data was not fetched
+         */
 
         const contentString =
           this.state.isLoading === false &&
@@ -140,7 +150,7 @@ class App extends Component {
               <h1>${location.venue.name}</h1>
               <h3>${"Sorry,Cannot get Data".toUpperCase()}</h3>
               <h2>Exceeded FourSquare API limit</h2></div>`;
-        // create a marker for each location
+        // create a marker for each location given each marker an unquie id and title animate them when they are initally loaded on map
         let animation = window.google.maps.Animation.DROP;
         let marker = new window.google.maps.Marker({
           position: new window.google.maps.LatLng(location.venue.location),
@@ -150,17 +160,17 @@ class App extends Component {
           animation
         });
         markers.push(marker);
-        // set the info window content to location info and open on marker click
+        //based on the contentstring set the infowindow content for each marker which can be opened when a marker is clicked
         marker.addListener("click", () => {
           infowindow.setContent(contentString);
           infowindow.open(map, marker);
-          // animate the markers on click
+          // markers are given an animation with a timeout
           marker.setAnimation(window.google.maps.Animation.BOUNCE);
           setTimeout(() => {
             marker.setAnimation(null);
           }, 600);
         });
-        // close info windows when map is clicked
+        //when clicked on map, if any infowindow is open, close it
         map.addListener("click", () => {
           if (infowindow) {
             infowindow.close();
@@ -169,13 +179,16 @@ class App extends Component {
       });
     this.setState({ map, markers, loaded: true });
   }
-  //=============================================================event-handling======================================================
-  handleFilter = query => {
-    // set state of query, setting visibility of each marker
+  //=============================================================EVENT HANDLING======================================================
+  /**
+   *  handleEvent when a user searches for a place in the searchinput,set state of query,set visibility of each marker,filter locations
+   *  based on query,keep this filtered location in state, if query matches with the location name the markers visibility is set to true
+   *  else based on the filtered location if venue id does not match with that of marker id, the markers are hidden
+   */
 
+  handleFilter = query => {
     this.setState({ query: query });
     this.state.markers.map(marker => marker.setVisible(true));
-    // filter locations based on query, set state of filtered
 
     if (query) {
       const match = new RegExp(escapeRegExp(query), "i");
@@ -183,7 +196,6 @@ class App extends Component {
         match.test(location.venue.name)
       );
       this.setState({ filtered });
-      // hide markers that are not searched for
       const hideMarkers = this.state.markers.filter(marker =>
         filtered.every(
           filteredLocation => filteredLocation.venue.id !== marker.id
@@ -194,18 +206,21 @@ class App extends Component {
       this.state.markers.forEach(marker => marker.setVisible(true));
     }
   };
-  // =============================================================event-handling======================================================
-  triggerMarkerClick = placeid => {
+
+  /**
+   * handleEvent when a user clicks through the list items,we map through the markers array state and if the markers id matches the venue id
+   * clicked,it tiggers a marker click showing the infowindow content of that particular venue
+   */
+  triggerMarkerClick = placeId => {
     this.state.markers.map(marker => {
-      if (marker.id === placeid) {
+      if (marker.id === placeId) {
         window.google.maps.event.trigger(marker, "click");
       }
       return marker;
     });
   };
-  //====================================================================================================================
 
-  //=======================================================RENDER======================================================
+  //=======================================================RENDER======================================================================
   render() {
     const { query, places2, filtered } = this.state;
     return (
@@ -215,7 +230,7 @@ class App extends Component {
             <ToggleSidebar />
           </ErrorBoundary>
         </header>
-        <aside className="side">
+        <aside>
           <ErrorBoundary>
             <SidebarSearch value={query} handleFilter={this.handleFilter} />
           </ErrorBoundary>
@@ -237,8 +252,9 @@ class App extends Component {
     );
   }
 }
-//===========================================================END OF CLASS==============================================
+//===========================================================END OF CLASS===========================================================
 //Load the google maps using script url- reference-Resources[1]
+//If there is any error while loading the script, user is shown a message about it
 function loadJS(url) {
   let ref = window.document.getElementsByTagName("script")[0];
   let script = window.document.createElement("script");
@@ -250,5 +266,5 @@ function loadJS(url) {
     document.write("Error loading Map, Please Try again in a few moments.");
   };
 }
-//=====================================================================================================================
+//====================================================================================================================================
 export default App;
