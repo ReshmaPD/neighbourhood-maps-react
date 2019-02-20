@@ -1,5 +1,7 @@
 # Neighbourhood Maps React Project
 
+[Live Website](https://reshma-neighbourhood-maps-react.netlify.com/)
+
 ## Table of Contents
 
 - [About the Application](#about-the-application)
@@ -15,7 +17,9 @@
 
 ## About the Application
 
-A **Neighbourhood Maps React Project** which is a web application with mobile and offline first approach that is responsive and works offline.Conforming with the web accesibilty standard this single page application shows a map with markers representing some points of interest in **Mumbai City**. The app interface is such that the user can click on a marker on the map or on a list item in the toggleable side menu to display an info window with details of that place.User can also search specific places with a search input provided on the sidebar.
+A **Neighbourhood Maps React Project** which is a web application with mobile and offline first approach that is responsive and works offline.Conforming with the web accesibilty standard this single page application shows a map with markers representing some points of interest in **Mumbai City**. The app interface is such that the user can click on a marker on the map or on a list item in the toggleable side menu to display an info window with details of that place.User can also search specific places with a search input provided on the sidebar.  
+
+This single page application uses asynchronous API requests utilizing the Google Maps API and FourseSquare API and uses error handling wherin data requests that fail are handled gracefully using common fallback techniques.
 
 ## Application-dependencies
 
